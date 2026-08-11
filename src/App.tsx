@@ -14,9 +14,16 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [chaos, setChaos] = useState(false)
   const playAnimation = useCallback((event: Parameters<BattlefieldHandle['play']>[0]) => battlefield.current?.play(event) ?? Promise.resolve(), [])
-  const { stats, phase, activeEvent, queueDepth, enqueue } = useBurnEngine({ playAnimation, soundEnabled })
+  const { stats, phase, activeEvent, activeVolley, queueDepth, enqueue, enqueueMany } = useBurnEngine({ playAnimation, soundEnabled })
 
   const trigger = useCallback((tier?: BurnTier) => enqueue(provider.current.createEvent(tier)), [enqueue])
+  const triggerBarrage = useCallback(() => {
+    const events = Array.from({ length: 6 }, (_, index) => {
+      const event = provider.current.createEvent(index % 3 === 0 ? 'small' : 'micro')
+      return { ...event, timestamp: Date.now() + index * 100 }
+    })
+    enqueueMany(events)
+  }, [enqueueMany])
 
   const toggleChaos = useCallback(() => {
     setChaos((running) => {
@@ -42,14 +49,15 @@ export default function App() {
       <section className={`battlefield-stage ${phase}`}>
         <Battlefield ref={battlefield} />
         {whaleWarning && <div className="whale-warning"><small>⚠ INCOMING ⚠</small><strong>WHALE DETECTED</strong><span>{activeEvent.burnAmount.toLocaleString()} SHIDO</span></div>}
-        {activeEvent && phase === 'flight' && <div className={`incoming-tag ${activeEvent.burnTier}`}>{activeEvent.burnTier.toUpperCase()} BURN INCOMING</div>}
+        {activeVolley?.isBarrage && phase === 'flight' && <div className="barrage-warning"><small>{activeVolley.events.length} BURNS LOCKED</small><strong>BARRAGE!</strong></div>}
+        {activeEvent && !activeVolley?.isBarrage && phase === 'flight' && <div className={`incoming-tag ${activeEvent.burnTier}`}>{activeEvent.burnTier.toUpperCase()} BURN INCOMING</div>}
       </section>
       <LatestBurn event={stats.latestBurn} />
       <section className="lower-grid">
         <BurnFeed events={stats.recentEvents} />
-        <DeveloperControls chaos={chaos} queueDepth={queueDepth} onTrigger={trigger} onToggleChaos={toggleChaos} />
+        <DeveloperControls chaos={chaos} queueDepth={queueDepth} onTrigger={trigger} onBarrage={triggerBarrage} onToggleChaos={toggleChaos} />
       </section>
-      <footer>SIMULATION MODE · NO LIVE BLOCKCHAIN DATA · PHASE 1 PROTOTYPE</footer>
+      <footer>SIMULATION MODE · NO LIVE BLOCKCHAIN DATA · PHASE 2 BATTLEFIELD</footer>
     </main>
   )
 }

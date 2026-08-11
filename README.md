@@ -1,10 +1,10 @@
-# SHIDO BURN WAR — Phase 1
+# SHIDO BURN WAR — Phase 2
 
-A functional browser prototype that turns normalized SHIDO burn events into a cartoon battlefield sequence:
+A responsive cartoon battlefield that turns normalized SHIDO burn events into an escalating attack on the token supply:
 
-`burn event → classify → enqueue → launch projectile → impact supply → update UI`
+`provider → normalize → classify → queue/volley → animate → impact → update totals and feed`
 
-This is intentionally **simulation-only**. It proves the interaction and architecture before any live-chain assumptions or finished artwork are introduced.
+Phase 2 is still **simulation-only**. It upgrades the battlefield, motion, barrage handling, reactions and audio while deliberately keeping live-chain code out of the animation engine.
 
 ## Run locally
 
@@ -15,24 +15,27 @@ npm install
 npm run dev
 ```
 
-Open the local URL Vite prints (normally `http://localhost:5173`). Click **Trigger Whale** to see the warning, largest projectile, explosion, stat update, and feed entry.
+Open the URL Vite prints (normally `http://localhost:5173`). Try **Fire Barrage** and **Trigger Whale** first.
 
-Verification commands:
+Verification:
 
 ```bash
 npm test
 npm run build
+npm run lint
 ```
 
-## What Phase 1 includes
+## Phase 2 additions
 
-- Responsive, 2:1 Phaser battlefield with code-drawn placeholder supply/burn bases, SHIDO coin pile, furnace, projectiles, explosions, camera shake, and coin scatter
-- Micro, small, medium, large, and whale attack animations
-- Whale warning state and delayed cinematic launch
-- Three counters, latest-impact display, recent event feed, fake explorer links, sound toggle, and queue depth
-- Manual triggers, random burn, and stoppable Chaos mode
-- FIFO event queue capable of receiving events while another animation is active
-- Tests for thresholds, queue order, counter mutations, and simulated event creation
+- Rebuilt code-drawn battlefield with moonlit depth, skyline, animated embers, upgraded forts, richer coin pile and furnace
+- Five visually distinct weapons: spark, bomb, rocket, meteor and giant missile
+- Layered trails, smoke clouds, shock rings, scorch marks, coin debris, flashes and tier-scaled camera shake
+- Burn operator and Supply defender with context-sensitive reactions
+- Furnace heat, flame, crew and warning-light reactions during launches
+- Real micro/small barrage grouping plus a dedicated **Fire Barrage** control
+- Exact per-event totals and feed records even when multiple events share one volley
+- Layered Web Audio launch, warning, impact and filtered-noise effects
+- Responsive barrage and impact HUD states
 
 ## Event flow
 
@@ -40,45 +43,44 @@ npm run build
 BurnDataProvider
   → normalizeBurn()
   → classifyBurn()
-  → BurnEventQueue
+  → BurnEventQueue.dequeueBarrage()
+  → createBurnVolley()
   → useBurnEngine
-  → BattlefieldScene animation
-  → applyBurnEvent() UI update
+  → BattlefieldScene.playBurn()
+  → applyBurnEvents()
 ```
 
-The totals change **on impact**, not when an event first enters the queue. This keeps the visual event and displayed state synchronized.
+The queue groups only adjacent `micro` and `small` events inside the configured time and size limits. It never merges their transaction identity. Counters still change only after the complete volley impacts.
 
 ## Project structure
 
 ```text
 src/
-  animation/   Phaser scene and drawing/animation code
-  audio/       Generated Web Audio warning/impact sounds
-  components/  Responsive React HUD, feed, controls, battlefield host
-  config/      Tier thresholds and animation mappings
-  domain/      Normalized BurnEvent contract
+  animation/   Phaser scene, drawing, weapons, particles and reactions
+  audio/       Generated Web Audio launch/warning/impact layers
+  components/  React HUD, feed, controls and battlefield host
+  config/      Tier thresholds, animation mappings and barrage policy
+  domain/      BurnEvent and BurnVolley contracts
   engine/      Queue-to-animation orchestration
-  providers/   Provider interface and simulated implementation
-  queue/       Framework-independent FIFO BurnEventQueue
+  providers/   Provider interface and simulator
+  queue/       Framework-independent event queue and grouping
   services/    Classification and normalization
   state/       Pure counter/feed state updates
 ```
 
-## Configure burn tiers
+## Configuration
 
-Edit `src/config/burnTiers.ts` only. `BURN_THRESHOLDS` controls classification boundaries, while `TIER_ANIMATIONS` controls visual duration, scale, colour, explosion size, and camera shake. Thresholds are not duplicated in the UI or engine.
+All balancing remains in `src/config/burnTiers.ts`:
+
+- `BURN_THRESHOLDS` controls tier classification.
+- `TIER_ANIMATIONS` controls weapon type, duration, colour, scale, blast and shake.
+- `BARRAGE_CONFIG` controls eligible tiers, maximum volley size, timestamp gap and launch stagger.
 
 ## Future live Shido provider
 
-A future `ShidoProvider` should implement `BurnDataProvider` from `src/providers/BurnDataProvider.ts`. Its chain-specific job will be to:
+A live provider implements `BurnDataProvider` from `src/providers/BurnDataProvider.ts`, converts chain-specific data into `RawBurnEvent`, passes it through `normalizeBurn`, and emits normalized `BurnEvent` objects. The queue, barrage policy, Phaser scene and React UI remain unchanged.
 
-1. connect to a verified live source,
-2. calculate/extract burns using verified Shido mechanics,
-3. construct a `RawBurnEvent`,
-4. pass it through `normalizeBurn`, and
-5. emit only normalized `BurnEvent` objects.
-
-The user supplied the following candidate endpoints for later research; they are deliberately **not called or treated as verified in Phase 1**:
+Candidate endpoints supplied for later verification—not called by Phase 2:
 
 - REST/Swagger: `https://rest.mavnode.io/swagger/#`
 - Cosmos RPC: `https://rpc.mavnode.io`
@@ -86,20 +88,19 @@ The user supplied the following candidate endpoints for later research; they are
 - gRPC: `https://grpc.mavnode.io`
 - EVM JSON-RPC: `https://evm.mavnode.io`
 
-No queue, classifier, animation, or React UI changes should be necessary when the simulator is replaced or supplemented with a live provider.
+## Current limits
 
-## Known Phase 1 limits
+- All values and explorer links are simulated; starting totals are demo fixtures.
+- Art remains deterministic Phaser vector art rather than a downloadable sprite atlas.
+- Barrages group queued lightweight events; they do not yet use network-rate windows or adaptive choreography.
+- Audio is generated in-browser rather than using licensed/original recorded samples.
+- Persistent battlefield damage resets on refresh and does not yet reflect supply percentage.
+- No backend, wallet, authentication, NFT, sharing, Burn Cam or blockchain integration.
 
-- Values and explorer links are simulated; the starting totals are visual demo fixtures.
-- Projectiles, castles, coins, and explosions are drawn primitives rather than production art.
-- Queue processing is sequential. Its snapshot API leaves a clean seam for Phase 2 barrage grouping, but grouping is not implemented yet.
-- Sound is intentionally basic oscillator audio and begins only after user interaction due to browser autoplay policy.
-- No backend, wallet, authentication, NFT, sharing, Burn Cam, or blockchain integration.
+## Recommended Phase 3
 
-## Recommended Phase 2 (not started)
-
-- Replace primitives with an authored sprite/texture atlas while preserving the current scene API.
-- Add pooled particles, smoke trails, projectile variants, furnace heat states, and two or three restrained reaction animations.
-- Add a barrage policy that groups adjacent micro/small burns while retaining exact aggregate totals and individual feed records.
-- Improve audio with small licensed/original effects and per-tier mixing.
-- Add visual regression and reduced-motion behavior around the new art.
+- Research and verify the exact Shido burn mechanism and authoritative live event source.
+- Implement a read-only `ShidoProvider` behind a simulation/live mode switch.
+- Reconcile missed blocks, reconnects, duplicate transaction hashes and chain reorgs.
+- Replace demo totals with verified supply/burn data and clearly label finality state.
+- Add a lightweight sprite/audio asset pipeline only after the live event semantics are proven.

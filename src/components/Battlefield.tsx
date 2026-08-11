@@ -1,10 +1,10 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import Phaser from 'phaser'
-import type { BurnEvent } from '../domain/burnEvent'
+import type { BurnVolley } from '../domain/burnVolley'
 import { BattlefieldScene } from '../animation/BattlefieldScene'
 
 export interface BattlefieldHandle {
-  play(event: BurnEvent): Promise<void>
+  play(volley: BurnVolley): Promise<void>
 }
 
 export const Battlefield = forwardRef<BattlefieldHandle>(function Battlefield(_, ref) {
@@ -13,7 +13,7 @@ export const Battlefield = forwardRef<BattlefieldHandle>(function Battlefield(_,
   const [ready, setReady] = useState(false)
 
   useImperativeHandle(ref, () => ({
-    play: (event) => sceneRef.current?.playBurn(event) ?? Promise.resolve(),
+    play: (volley) => sceneRef.current?.playBurn(volley) ?? Promise.resolve(),
   }), [])
 
   useEffect(() => {

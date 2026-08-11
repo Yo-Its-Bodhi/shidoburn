@@ -25,3 +25,7 @@ export function applyBurnEvent(state: BurnStats, event: BurnEvent): BurnStats {
     recentEvents: [event, ...state.recentEvents].slice(0, 8),
   }
 }
+
+export function applyBurnEvents(state: BurnStats, events: BurnEvent[]): BurnStats {
+  return events.reduce(applyBurnEvent, state)
+}

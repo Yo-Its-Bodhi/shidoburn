@@ -1,4 +1,5 @@
 import type { BurnEvent } from '../domain/burnEvent'
+import type { BurnTier } from '../domain/burnEvent'
 
 export class BurnEventQueue {
   private events: BurnEvent[] = []
@@ -15,6 +16,21 @@ export class BurnEventQueue {
 
   dequeue(): BurnEvent | undefined {
     return this.events.shift()
+  }
+
+  dequeueBarrage(eligibleTiers: readonly BurnTier[], maxEvents: number, maxTimestampGapMs: number): BurnEvent[] {
+    const first = this.dequeue()
+    if (!first) return []
+    if (!eligibleTiers.includes(first.burnTier)) return [first]
+
+    const volley = [first]
+    while (volley.length < maxEvents && this.events.length > 0) {
+      const next = this.events[0]
+      const previous = volley[volley.length - 1]
+      if (!eligibleTiers.includes(next.burnTier) || next.timestamp - previous.timestamp > maxTimestampGapMs) break
+      volley.push(this.events.shift()!)
+    }
+    return volley
   }
 
   peek(): BurnEvent | undefined {

@@ -34,3 +34,12 @@ export const TIER_SAMPLE_AMOUNTS: Record<BurnTier, [number, number]> = {
   large: [BURN_THRESHOLDS.large, BURN_THRESHOLDS.whale - 1],
   whale: [BURN_THRESHOLDS.whale, 400_000],
 }
+
+// Adjacent lightweight burns can be animated as one volley without merging their
+// transactions. Each event still updates totals and appears in the feed separately.
+export const BARRAGE_CONFIG = {
+  eligibleTiers: ['micro', 'small'] as BurnTier[],
+  maxEvents: 6,
+  maxTimestampGapMs: 2_500,
+  launchStaggerMs: 145,
+} as const

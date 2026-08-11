@@ -4,12 +4,13 @@ interface Props {
   chaos: boolean
   queueDepth: number
   onTrigger: (tier?: BurnTier) => void
+  onBarrage: () => void
   onToggleChaos: () => void
 }
 
 const TIERS: BurnTier[] = ['micro', 'small', 'medium', 'large', 'whale']
 
-export function DeveloperControls({ chaos, queueDepth, onTrigger, onToggleChaos }: Props) {
+export function DeveloperControls({ chaos, queueDepth, onTrigger, onBarrage, onToggleChaos }: Props) {
   return (
     <section className="panel controls-panel">
       <div className="panel-heading">
@@ -19,6 +20,7 @@ export function DeveloperControls({ chaos, queueDepth, onTrigger, onToggleChaos 
       <div className="control-grid">
         {TIERS.map((tier) => <button key={tier} className={`trigger ${tier}`} onClick={() => onTrigger(tier)}>Trigger {tier}</button>)}
         <button className="trigger random" onClick={() => onTrigger()}>Random burn</button>
+        <button className="trigger barrage" onClick={onBarrage}>Fire barrage</button>
         <button className={`trigger chaos ${chaos ? 'active' : ''}`} onClick={onToggleChaos}>{chaos ? 'Stop chaos' : 'Start chaos'}</button>
       </div>
     </section>
