@@ -1,10 +1,10 @@
-# SHIDO BURN WAR — Phase 2
+# SHIDO BURN WAR — Phase 3 Comedy Front
 
 A responsive cartoon battlefield that turns normalized SHIDO burn events into an escalating attack on the token supply:
 
 `provider → normalize → classify → queue/volley → animate → impact → update totals and feed`
 
-Phase 2 is still **simulation-only**. It upgrades the battlefield, motion, barrage handling, reactions and audio while deliberately keeping live-chain code out of the animation engine.
+Phase 3 is still **simulation-only**. It pushes the visual storytelling and battlefield comedy toward the original product concept while deliberately keeping live-chain code out of the animation engine.
 
 ## Run locally
 
@@ -25,12 +25,17 @@ npm run build
 npm run lint
 ```
 
-## Phase 2 additions
+## Phase 3 additions
 
-- Rebuilt code-drawn battlefield with moonlit depth, skyline, animated embers, upgraded forts, richer coin pile and furnace
+- Asymmetric ruined Supply fortress with an exposed, destructible SHIDO coin vault
+- Stacked industrial Burn citadel with cannon deck, furnace, pipes, chimney, machinery and green smoke
+- Ten active crew positions: shield guard, spear guard, coin handler, panicked defender, commander, cannoneer, loader, archer, spotter and furnace goblin
+- 126 contextual phrases and noises split across idle, launch, barrage, tiered impact and whale moments
+- Anti-repeat reaction selection and multi-character staggered reactions
+- Persistent coin loss, new wall cracks and impact rubble as the battle progresses
 - Five visually distinct weapons: spark, bomb, rocket, meteor and giant missile
 - Layered trails, smoke clouds, shock rings, scorch marks, coin debris, flashes and tier-scaled camera shake
-- Burn operator and Supply defender with context-sensitive reactions
+- Idle crew chatter so the battlefield stays alive between transactions
 - Furnace heat, flame, crew and warning-light reactions during launches
 - Real micro/small barrage grouping plus a dedicated **Fire Barrage** control
 - Exact per-event totals and feed records even when multiple events share one volley
@@ -91,16 +96,20 @@ Candidate endpoints supplied for later verification—not called by Phase 2:
 ## Current limits
 
 - All values and explorer links are simulated; starting totals are demo fixtures.
-- Art remains deterministic Phaser vector art rather than a downloadable sprite atlas.
+- Art remains deterministic Phaser vector art. `docs/concepts/phase3-cast-fortress-guide.png` is the approved visual-development direction, not a runtime sprite atlas.
 - Barrages group queued lightweight events; they do not yet use network-rate windows or adaptive choreography.
 - Audio is generated in-browser rather than using licensed/original recorded samples.
 - Persistent battlefield damage resets on refresh and does not yet reflect supply percentage.
 - No backend, wallet, authentication, NFT, sharing, Burn Cam or blockchain integration.
 
-## Recommended Phase 3
+## Future deployment
+
+The intended production hostname is `burnwars.bodhix.io`. No DNS, hosting or production environment has been changed in Phase 3. The Vite app is static-host friendly; the eventual host should build with `npm run build` and serve `dist/` with SPA fallback to `index.html`.
+
+## Recommended next work
 
 - Research and verify the exact Shido burn mechanism and authoritative live event source.
 - Implement a read-only `ShidoProvider` behind a simulation/live mode switch.
 - Reconcile missed blocks, reconnects, duplicate transaction hashes and chain reorgs.
 - Replace demo totals with verified supply/burn data and clearly label finality state.
-- Add a lightweight sprite/audio asset pipeline only after the live event semantics are proven.
+- Convert the approved fortress and crew guide into transparent production sprite atlases with idle, launch, panic, impact and celebration frames.

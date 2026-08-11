@@ -40,7 +40,7 @@ export default function App() {
   return (
     <main className="app-shell">
       <header className="masthead">
-        <div className="brand"><span>SHIDO</span><strong>BURN WAR</strong><small>LESS SUPPLY. MORE CHAOS.</small></div>
+        <div className="brand"><span>SHIDO</span><strong>BURN WAR</strong><small>EVERY BURN FUELS THE DESTRUCTION.</small></div>
         <button className="sound-button" onClick={() => setSoundEnabled((on) => !on)} aria-pressed={soundEnabled}>
           {soundEnabled ? '🔊 SOUND ON' : '🔇 SOUND OFF'}
         </button>
@@ -57,7 +57,7 @@ export default function App() {
         <BurnFeed events={stats.recentEvents} />
         <DeveloperControls chaos={chaos} queueDepth={queueDepth} onTrigger={trigger} onBarrage={triggerBarrage} onToggleChaos={toggleChaos} />
       </section>
-      <footer>SIMULATION MODE · NO LIVE BLOCKCHAIN DATA · PHASE 2 BATTLEFIELD</footer>
+      <footer>SIMULATION MODE · NO LIVE BLOCKCHAIN DATA · PHASE 3 COMEDY FRONT · FUTURE HOME: BURNWARS.BODHIX.IO</footer>
     </main>
   )
 }
